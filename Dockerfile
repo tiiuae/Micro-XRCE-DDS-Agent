@@ -1,55 +1,18 @@
-#########################################################################################
-# Micro XRCE-DDS Agent Docker
-#########################################################################################
+FROM ghcr.io/tiiuae/fog-ros-baseimage:builder-latest AS builder
 
-# Build stage
-FROM ubuntu AS build
-ENV DEBIAN_FRONTEND=noninteractive
-WORKDIR /root
+COPY . /main_ws/src/
 
-# Essentials
-RUN apt-get update
-RUN apt-get install -y \
-            software-properties-common \
-            build-essential \
-            cmake \
-            git
+# this:
+# 1) builds the application
+# 2) packages the application as .deb in /main_ws/
 
-# Java
-RUN apt install -y openjdk-8-jdk
-ENV JAVA_HOME "/usr/lib/jvm/java-8-openjdk-amd64/"
+RUN /packaging/build.sh
 
-# Gradle
-RUN apt-get install -y gradle
+#  ▲               runtime ──┐
+#  └── build                 ▼
 
-RUN apt-get clean
+FROM ghcr.io/tiiuae/fog-ros-baseimage:stable
 
-# Prepare Micro XRCE-DDS Agent workspace
-RUN mkdir -p /agent/build
-ADD . /agent/
+COPY --from=builder /main_ws/ros-*-microxrce-agent_*_amd64.deb /microxrce-agent.deb
 
-# Build Micro XRCE-DDS Agent and install
-RUN cd /agent/build && \
-    cmake -DCMAKE_INSTALL_PREFIX=../install \
-    .. &&\
-    make -j $(nproc) && make install
-
-# Prepare Micro XRCE-DDS Agent artifacts
-RUN cd /agent && \
-    tar -czvf install.tar.gz  -C install .
-
-# Final user image
-FROM ubuntu
-WORKDIR /root
-
-# Copy Micro XRCE-DDS Agent build artifacts
-COPY --from=build /agent/install.tar.gz  /usr/local/
-RUN tar -xzvf /usr/local/install.tar.gz -C /usr/local/ &&\
-    rm /usr/local/install.tar.gz
-
-COPY --from=build /agent/agent.refs .
-
-RUN ldconfig
-
-ENTRYPOINT ["MicroXRCEAgent"]
-CMD ["--help"]
+RUN dpkg -i /microxrce-agent.deb && rm /microxrce-agent.deb
