@@ -15,6 +15,7 @@ FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-2f516bb
 
 ENTRYPOINT /entrypoint.sh
 COPY entrypoint.sh /entrypoint.sh
+COPY agent.refs /agent.refs
 
 COPY --from=builder /main_ws/ros-*-microxrce-agent_*_amd64.deb /microxrce-agent.deb
 RUN dpkg -i /microxrce-agent.deb && rm /microxrce-agent.deb
