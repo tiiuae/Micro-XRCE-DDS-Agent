@@ -378,7 +378,7 @@ bool FastDDSParticipant::create_by_ref(
     bool rv = false;
     if (nullptr == ptr_)
     {
-        ptr_ = factory_->create_participant_with_profile(domain_id_, ref);
+        ptr_ = factory_->create_participant_with_profile(ref);
         rv = (nullptr != ptr_);
     }
     return rv;
@@ -395,7 +395,7 @@ bool FastDDSParticipant::create_by_xml(
         {
             fastdds::dds::DomainParticipantQos qos = factory_->get_default_participant_qos();
             set_qos_from_attributes(qos, attrs.rtps);
-            ptr_ = factory_->create_participant(domain_id_, qos);
+            ptr_ = factory_->create_participant(attrs.domainId, qos);
         }
         rv = (nullptr != ptr_);
     }
@@ -410,7 +410,7 @@ bool FastDDSParticipant::create_by_bin(
     {
         fastdds::dds::DomainParticipantQos qos = factory_->get_default_participant_qos();
         set_qos_from_xrce_object(qos, participant_xrce);
-        ptr_ = factory_->create_participant(domain_id_, qos);
+        ptr_ = factory_->create_participant(participant_xrce.domain_id(), qos);
         rv = (nullptr != ptr_);
     }
     return rv;
