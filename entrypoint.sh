@@ -2,4 +2,4 @@
 
 source /opt/ros/galactic/setup.bash
 
-MicroXRCEAgent udp4 --port 2019
+MicroXRCEAgent udp4 --port 2019 --refs /agent.refs
