@@ -29,6 +29,7 @@ extern template class DiscoveryServerWindows<IPv4EndPoint>; // Explicit instanti
 
 TCPv4Agent::TCPv4Agent(
         uint16_t agent_port,
+        uint16_t client_port,
         Middleware::Kind middleware_kind)
     : Server<IPv4EndPoint>{middleware_kind}
     , TCPServerBase{}
@@ -39,6 +40,7 @@ TCPv4Agent::TCPv4Agent(
     , poll_fds_{}
     , buffer_{0}
     , agent_port_{agent_port}
+    , client_port_{client_port}
     , listener_thread_{}
     , running_cond_{false}
     , messages_queue_{}
