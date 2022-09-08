@@ -52,6 +52,8 @@
 #define DEFAULT_VERBOSE_LEVEL   4
 #define DEFAULT_DISCOVERY_PORT  7400
 #define DEFAULT_BAUDRATE_LEVEL  "115200"
+#define DEFAULT_SEND_PORT       0
+
 
 namespace eprosima {
 namespace uxr {
@@ -628,6 +630,7 @@ class IPvXArgs
 public:
     IPvXArgs()
         : port_("-p", "--port")
+        , send_port_("-s", "--send_port", DEFAULT_SEND_PORT)
     {
     }
 
@@ -635,12 +638,16 @@ public:
             int argc,
             char** argv)
     {
+
         ParseResult parse_port = port_.parse_argument(argc, argv);
+        ParseResult parse_send_port = send_port_.parse_argument(argc, argv);
         if (ParseResult::VALID != parse_port)
         {
             std::cerr << "Warning: '--port <value>' is required" << std::endl;
         }
-        return (ParseResult::VALID == parse_port ? true : false);
+        return (
+            (ParseResult::VALID == parse_port && 
+             ParseResult::VALID == parse_send_port) ? true : false);
     }
 
     uint16_t port() const
@@ -648,15 +655,22 @@ public:
         return port_.value();
     }
 
+    uint16_t send_port() const
+    {
+        return send_port_.value();
+    }
+
     const std::string get_help() const
     {
         std::stringstream ss;
         ss << "    " << port_.get_help() << std::endl;
+        ss << "    " << send_port_.get_help() << std::endl;
         return ss.str();
     }
 
 private:
     Argument<uint16_t> port_;
+    Argument<uint16_t> send_port_;
 };
 
 #ifndef _WIN32
@@ -1015,7 +1029,7 @@ public:
 
     bool launch_agent()
     {
-        agent_server_.reset(new AgentType(ip_args_.port(), utils::get_mw_kind(common_args_.middleware())));
+        agent_server_.reset(new AgentType(ip_args_.port(), ip_args_.send_port(), utils::get_mw_kind(common_args_.middleware())));
         if (agent_server_->start())
         {
             common_args_.apply_actions(agent_server_);

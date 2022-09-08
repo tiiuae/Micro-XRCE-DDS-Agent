@@ -28,11 +28,13 @@ extern template class DiscoveryServerWindows<IPv6EndPoint>; // Explicit instanti
 
 UDPv6Agent::UDPv6Agent(
         uint16_t agent_port,
+        uint16_t client_port,
         Middleware::Kind middleware_kind)
     : Server<IPv6EndPoint>{middleware_kind}
     , poll_fd_{INVALID_SOCKET, 0, 0}
     , buffer_{0}
     , agent_port_{agent_port}
+    , client_port_{client_port}
 #ifdef UAGENT_DISCOVERY_PROFILE
     , discovery_server_(*processor_)
 #endif
@@ -170,7 +172,11 @@ bool UDPv6Agent::recv_message(
             input_packet.message.reset(new InputMessage(buffer_, size_t(bytes_received)));
             std::array<uint8_t, 16> addr{};
             std::copy(std::begin(client_addr.sin6_addr.s6_addr), std::end(client_addr.sin6_addr.s6_addr), addr.begin());
-            input_packet.source = IPv6EndPoint(addr, client_addr.sin6_port);
+            uint16_t port = client_addr.sin6_port;
+            if (client_port_ != 0) {
+                port = htons(client_port_);
+            }
+            input_packet.source = IPv6EndPoint(addr, port);
             rv = true;
 
             uint32_t raw_client_key = 0u;

@@ -36,6 +36,7 @@ class UDPv6Agent : public Server<IPv6EndPoint>
 public:
     UDPv6Agent(
             uint16_t port,
+            uint16_t client_port,
             Middleware::Kind middleware_kind);
 
     ~UDPv6Agent() final;
@@ -82,6 +83,7 @@ private:
     struct pollfd poll_fd_;
     uint8_t buffer_[SERVER_BUFFER_SIZE];
     uint16_t agent_port_;
+    uint16_t client_port_;
 #ifdef UAGENT_DISCOVERY_PROFILE
     DiscoveryServerLinux<IPv6EndPoint> discovery_server_;
 #endif

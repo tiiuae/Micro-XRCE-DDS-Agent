@@ -27,11 +27,13 @@ extern template class DiscoveryServerWindows<IPv4EndPoint>; // Explicit instanti
 
 UDPv4Agent::UDPv4Agent(
         uint16_t agent_port,
+        uint16_t client_port,
         Middleware::Kind middleware_kind)
     : Server<IPv4EndPoint>{middleware_kind}
     , poll_fd_{INVALID_SOCKET, 0, 0}
     , buffer_{0}
     , agent_port_{agent_port}
+    , client_port_{client_port}
 #ifdef UAGENT_DISCOVERY_PROFILE
     , discovery_server_(*processor_)
 #endif
@@ -169,6 +171,9 @@ bool UDPv4Agent::recv_message(
             input_packet.message.reset(new InputMessage(buffer_, size_t(bytes_received)));
             uint32_t addr = client_addr.sin_addr.s_addr;
             uint16_t port = client_addr.sin_port;
+            if (client_port_ != 0) {
+                port = htons(client_port_);
+            }
             input_packet.source = IPv4EndPoint(addr, port);
             rv = true;
 
