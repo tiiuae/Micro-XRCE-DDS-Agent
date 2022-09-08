@@ -29,6 +29,7 @@ extern template class DiscoveryServerWindows<IPv6EndPoint>; // Explicit instanti
 
 TCPv6Agent::TCPv6Agent(
         uint16_t agent_port,
+        uint16_t client_port,
         Middleware::Kind middleware_kind)
     : Server<IPv6EndPoint>{middleware_kind}
     , TCPServerBase{}
@@ -39,6 +40,7 @@ TCPv6Agent::TCPv6Agent(
     , poll_fds_{}
     , buffer_{0}
     , agent_port_{agent_port}
+    , client_port_{client_port}
     , listener_thread_{}
     , running_cond_{false}
     , messages_queue_{}

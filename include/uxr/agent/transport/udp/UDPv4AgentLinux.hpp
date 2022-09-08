@@ -39,6 +39,7 @@ class UDPv4Agent : public Server<IPv4EndPoint>
 public:
     UDPv4Agent(
             uint16_t port,
+            uint16_t client_port,
             Middleware::Kind middleware_kind);
 
     ~UDPv4Agent() final;
@@ -84,6 +85,7 @@ private:
     struct pollfd poll_fd_;
     uint8_t buffer_[SERVER_BUFFER_SIZE];
     uint16_t agent_port_;
+    uint16_t client_port_;
 #ifdef UAGENT_DISCOVERY_PROFILE
     DiscoveryServerLinux<IPv4EndPoint> discovery_server_;
 #endif

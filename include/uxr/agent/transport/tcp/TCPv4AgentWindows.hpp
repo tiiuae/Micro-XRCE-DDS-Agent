@@ -43,6 +43,7 @@ class TCPv4Agent : public Server<IPv4EndPoint>, public TCPServerBase<TCPv4Connec
 public:
     UXR_AGENT_EXPORT TCPv4Agent(
             uint16_t agent_port,
+            uint16_t client_port,
             Middleware::Kind middleware_kind);
 
     UXR_AGENT_EXPORT ~TCPv4Agent() final;
@@ -118,6 +119,7 @@ private:
     std::array<struct pollfd, TCP_MAX_CONNECTIONS> poll_fds_;
     uint8_t buffer_[SERVER_BUFFER_SIZE];
     uint16_t agent_port_;
+    uint16_t client_port_;
     std::thread listener_thread_;
     std::atomic<bool> running_cond_;
     std::queue<InputPacket<IPv4EndPoint>> messages_queue_;
