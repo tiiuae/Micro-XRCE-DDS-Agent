@@ -21,7 +21,7 @@
                     </property>
                     <property>
                         <name>dds.sec.auth.builtin.PKI-DH.private_key</name>
-                        <value>file:///sros-keystore/enclaves/container/key.p11</value>
+                        <value>MICROXRCE_PRIVATE_KEY</value>
                     </property>
                     <property>
                         <name>dds.sec.access.plugin</name>
