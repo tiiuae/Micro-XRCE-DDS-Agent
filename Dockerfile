@@ -13,6 +13,8 @@ RUN /packaging/build.sh
 
 FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-2f516bb
 
+RUN pip3 install simplejson pystache
+
 ENTRYPOINT /entrypoint.sh
 COPY entrypoint.sh /entrypoint.sh
 COPY agent.refs /agent.refs
