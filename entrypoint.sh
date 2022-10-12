@@ -11,4 +11,4 @@ echo "${data_before}
 ${keydata}
 ${data_after}" > agent.refs.tmp
 
-MicroXRCEAgent udp4 --port 2020 --send_port 2019 --refs /agent.refs
+MicroXRCEAgent udp4 --port 2020 --send_port 2019 --refs /agent.refs.tmp
