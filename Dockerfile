@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y python3-pip && \
 
 ENTRYPOINT /entrypoint.sh
 COPY entrypoint.sh /entrypoint.sh
+COPY parse_agent_refs.py /parse_agent_refs.py
+COPY agent.refs.mustache /agent.refs.mustache
 COPY agent.refs /agent.refs
 
 COPY --from=builder /main_ws/ros-*-microxrce-agent_*_amd64.deb /microxrce-agent.deb
