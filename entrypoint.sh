@@ -17,7 +17,7 @@ _term() {
 }
 trap _term SIGTERM
 
-MicroXRCEAgent udp4 --port 2020 --send_port 2019 --refs /agent.refs
+MicroXRCEAgent udp4 --port 2020 --send_port 2019 --refs /agent.refs &
 
 child=$!
 echo "Waiting for pid $child"
