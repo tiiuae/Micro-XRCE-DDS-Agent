@@ -33,6 +33,6 @@ int main(int argc, char** argv)
         return 1;
     }
     agent_instance.run();
-
+    std::cout << "INFO: Agent shutdown gracefully." << std::endl;
     return 0;
 }
