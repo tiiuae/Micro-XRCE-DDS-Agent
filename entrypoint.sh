@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 source /opt/ros/galactic/setup.bash
+
 _term() {
         # FILL UP PROCESS SEARCH PATTERN HERE TO FIND PROPER PROCESS FOR SIGINT:
         pattern="MicroXRCEAgent"
