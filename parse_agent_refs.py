@@ -3,6 +3,10 @@
 import sys, os
 import pystache
 
+agent_refs_path=""
+if len(sys.argv) > 1:
+  agent_refs_path=sys.argv[1]
+
 env_keystore = os.environ.get("ROS_SECURITY_KEYSTORE")
 env_enclave_override = os.environ.get("ROS_SECURITY_ENCLAVE_OVERRIDE")
 
@@ -32,15 +36,17 @@ tmpl = ""
 with open(key_path, "r") as f:
   key = f.read().rstrip()
 
-with open("agent.refs.mustache", "r") as f:
+agent_refs_must_file = os.path.join(agent_refs_path, "agent.refs.mustache")
+with open(agent_refs_must_file, "r") as f:
   tmpl = f.read()
 
-agent_refs = pystache.render(tmpl, {'enclave_path': enclave_path, 'key_p11': key })
+agent_refs_data = pystache.render(tmpl, {'enclave_path': enclave_path, 'key_p11': key })
 
 # Remove original agent.refs
-if os.path.exists('agent.refs'):
-  os.remove('agent.refs')
+agent_refs_file = os.path.join(agent_refs_path, "agent.refs")
+if os.path.exists(agent_refs_file):
+  os.remove(agent_refs_file)
 
 # Write new agent.refs with sros params
-with open('agent.refs', 'w') as f:
-  f.write(agent_refs)
+with open(agent_refs_file, 'w') as f:
+  f.write(agent_refs_data)
