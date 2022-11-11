@@ -36,7 +36,7 @@ tmpl = ""
 with open(key_path, "r") as f:
   key = f.read().rstrip()
 
-agent_refs_must_file = os.path.join(agent_refs_path, "agent.refs.mustache")
+agent_refs_must_file = "/agent.refs.mustache"
 with open(agent_refs_must_file, "r") as f:
   tmpl = f.read()
 
