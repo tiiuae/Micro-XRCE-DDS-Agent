@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
-source /opt/ros/galactic/setup.bash
+unset FASTRTPS_DEFAULT_PROFILES_FILE
+
+./parse_agent_refs.py /enclave
 
 _term() {
         # FILL UP PROCESS SEARCH PATTERN HERE TO FIND PROPER PROCESS FOR SIGINT:
@@ -32,8 +34,8 @@ set +e
 wait $child
 trap - TERM
 wait $child
-set -e
 RESULT=$?
+set -e
 
 if [ $RESULT -ne 0 ]; then
     echo "ERROR: MicroXRCEAgent failed with code $RESULT" >&2
