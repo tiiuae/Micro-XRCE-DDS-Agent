@@ -20,7 +20,6 @@ eprosima::uxr::AgentInstance& agent_instance = agent_instance.getInstance();
 void signalHandler(int signum) {
     std::cout << "Interrupt signal (" << signum << ") received." << std::endl;
     agent_instance.stop();
-    exit(signum);
 }
 
 int main(int argc, char** argv)

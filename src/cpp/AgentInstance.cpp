@@ -116,8 +116,7 @@ void AgentInstance::stop()
     if (agent_thread_.joinable())
     {
         exit_signal.notify_all();
-        agent_thread_.join();
-    }    
+    }
 }
 #endif
 
