@@ -12,17 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <csignal>
 #include <uxr/agent/AgentInstance.hpp>
+
+eprosima::uxr::AgentInstance& agent_instance = agent_instance.getInstance();
+
+void signalHandler(int signum) {
+    std::cout << "Interrupt signal (" << signum << ") received." << std::endl;
+    agent_instance.stop();
+}
 
 int main(int argc, char** argv)
 {
-    eprosima::uxr::AgentInstance& agent_instance = agent_instance.getInstance();
+    signal(SIGINT, signalHandler);
+    signal(SIGTERM, signalHandler);
 
     if (!agent_instance.create(argc, argv))
     {
         return 1;
     }
     agent_instance.run();
-
+    std::cout << "INFO: Agent shutdown gracefully." << std::endl;
     return 0;
 }

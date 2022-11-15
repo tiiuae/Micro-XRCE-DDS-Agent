@@ -1,0 +1,63 @@
+<profiles>
+    <participant profile_name="default_xrce_participant">
+        <domainId>0</domainId>
+        <rtps>
+            <name>default_xrce_participant</name>
+            <propertiesPolicy>
+                <properties>
+                    <!-- Activate DDS:Auth:PKI-DH plugin -->
+                    <property>
+                        <name>dds.sec.auth.plugin</name>
+                        <value>builtin.PKI-DH</value>
+                    </property>
+                    <property>
+                        <name>dds.sec.crypto.plugin</name>
+                        <value>builtin.AES-GCM-GMAC</value>
+                    </property>
+                    <!-- Configure DDS:Auth:PKI-DH plugin -->
+                    <property>
+                        <name>dds.sec.auth.builtin.PKI-DH.identity_ca</name>
+                        <value>file://{{ enclave_path }}/identity_ca.cert.pem</value>
+                    </property>
+                    <property>
+                        <name>dds.sec.auth.builtin.PKI-DH.identity_certificate</name>
+                        <value>file://{{ enclave_path }}/cert.pem</value>
+                    </property>
+                    <property>
+                        <name>dds.sec.auth.builtin.PKI-DH.private_key</name>
+                        <value>{{ key_p11 }}</value>
+                    </property>
+                    <property>
+                        <name>dds.sec.access.plugin</name>
+                        <value>builtin.Access-Permissions</value>
+                    </property>
+                    <property>
+                        <name>dds.sec.access.builtin.Access-Permissions.permissions_ca</name>
+                        <value>file://{{ enclave_path }}/permissions_ca.cert.pem</value>
+                    </property>
+                    <property>
+                        <name>dds.sec.access.builtin.Access-Permissions.governance</name>
+                        <value>file://{{ enclave_path }}/governance.p7s</value>
+                    </property>
+                    <property>
+                        <name>dds.sec.access.builtin.Access-Permissions.permissions</name>
+                        <value>file://{{ enclave_path }}/permissions.p7s</value>
+                    </property>
+                    <!-- LOGGING -->
+                    <property>
+                        <name>dds.sec.log.plugin</name>
+                        <value>builtin.DDS_LogTopic</value>
+                    </property>
+                    <property>
+                        <name>dds.sec.log.builtin.DDS_LogTopic.logging_level</name>
+                        <value>DEBUG_LEVEL</value>
+                    </property>
+                    <property>
+                        <name>dds.sec.log.builtin.DDS_LogTopic.log_file</name>
+                        <value>security.log</value>
+                    </property>
+                </properties>
+            </propertiesPolicy>
+        </rtps>
+    </participant>
+</profiles>

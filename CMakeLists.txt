@@ -36,7 +36,7 @@ option(UAGENT_DISCOVERY_PROFILE "Build Discovery profile." OFF)
 option(UAGENT_P2P_PROFILE "Build P2P discovery profile." OFF)
 option(UAGENT_SOCKETCAN_PROFILE "Build Agent CAN FD transport." OFF)
 option(UAGENT_LOGGER_PROFILE "Build logger profile." ON)
-option(UAGENT_SECURITY_PROFILE "Build security profile." OFF)
+option(UAGENT_SECURITY_PROFILE "Build security profile." ON)
 option(UAGENT_BUILD_EXECUTABLE "Build Micro XRCE-DDS Agent provided executable." ON)
 option(UAGENT_BUILD_USAGE_EXAMPLES "Build Micro XRCE-DDS Agent built-in usage examples" OFF)
 
