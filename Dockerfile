@@ -13,8 +13,13 @@ RUN /packaging/build.sh
 
 FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-2f516bb
 
+RUN apt-get update && apt-get install -y python3-pip && \
+  pip3 install simplejson pystache
+
 ENTRYPOINT /entrypoint.sh
 COPY entrypoint.sh /entrypoint.sh
+COPY parse_agent_refs.py /parse_agent_refs.py
+COPY agent.refs.mustache /agent.refs.mustache
 COPY agent.refs /agent.refs
 
 COPY --from=builder /main_ws/ros-*-microxrce-agent_*_amd64.deb /microxrce-agent.deb
