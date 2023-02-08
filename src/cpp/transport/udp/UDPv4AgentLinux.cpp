@@ -55,6 +55,8 @@ UDPv4Agent::~UDPv4Agent()
     try
     {
         stop();
+
+        metrics_exposer = nullptr;
     }
     catch (std::exception& e)
     {
@@ -67,6 +69,24 @@ UDPv4Agent::~UDPv4Agent()
 
 bool UDPv4Agent::init()
 {
+    messagesFromFlightController = &(prometheus::BuildCounter()
+        .Name("messages_from_flightcontroller_count")
+        .Help("Number of messages sent towards Mission Computer")
+        .Register(*metrics_registry).Add({}));
+
+    messagesToFlightController = &(prometheus::BuildCounter()
+        .Name("messages_to_flightcontroller_count")
+        .Help("Number of messages sent towards Flight Controller")
+        .Register(*metrics_registry).Add({}));
+
+    auto metrics_port = getenv("METRICS_PORT");
+    if (metrics_port != nullptr) // start HTTP endpoint only if requested
+    {
+        metrics_exposer = std::make_shared<prometheus::Exposer>("0.0.0.0:" + std::string(metrics_port));
+
+        metrics_exposer->RegisterCollectable(metrics_registry);
+    }
+
     bool rv = false;
 
     poll_fd_.fd = socket(PF_INET, SOCK_DGRAM, 0);
@@ -194,6 +214,8 @@ bool UDPv4Agent::recv_message(
                          &client_addr_len);
         if (-1 != bytes_received)
         {
+            messagesFromFlightController->Increment();
+
             input_packet.message.reset(new InputMessage(buffer_, size_t(bytes_received)));
             uint32_t addr = client_addr.sin_addr.s_addr;
             in_port_t port = client_addr.sin_port;
@@ -248,6 +270,8 @@ bool UDPv4Agent::send_message(
     {
         if (size_t(bytes_sent) == output_packet.message->get_len())
         {
+            messagesToFlightController->Increment();
+
             rv = true;
             uint32_t raw_client_key = 0u;
             Server<IPv4EndPoint>::get_client_key(output_packet.destination, raw_client_key);

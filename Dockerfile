@@ -13,6 +13,10 @@ RUN /packaging/build.sh
 
 FROM ghcr.io/tiiuae/fog-ros-baseimage:v2.0.0
 
+HEALTHCHECK --interval=5s \
+	CMD fog-health check --metric=messages_from_flightcontroller_count --diff-gte=1.0 \
+		--metrics-from=http://localhost:${METRICS_PORT}/metrics --only-if-nonempty=${METRICS_PORT}
+
 RUN apt-get update && apt-get install -y python3-pip && \
   pip3 install simplejson pystache
 

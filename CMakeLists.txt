@@ -153,6 +153,8 @@ foreach(d ${_deps})
     find_package(${_name} ${_version} REQUIRED)
 endforeach()
 
+find_package(prometheus-cpp CONFIG REQUIRED)
+
 ###############################################################################
 # Sources
 ###############################################################################
@@ -252,7 +254,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     SOVERSION
         ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
     CXX_STANDARD
-        11
+        14
     CXX_STANDARD_REQUIRED
         YES
     C_STANDARD
@@ -328,11 +330,12 @@ if(UAGENT_BUILD_EXECUTABLE)
             ${PROJECT_NAME}
             $<$<BOOL:$<PLATFORM_ID:Linux>>:rt>
             $<$<BOOL:$<PLATFORM_ID:Linux>>:dl>
+            prometheus-cpp::pull
         )
 
     set_target_properties(MicroXRCEAgent PROPERTIES
         CXX_STANDARD
-            11
+            14
         CXX_STANDARD_REQUIRED
             YES
         )

@@ -28,6 +28,9 @@
 #include <cstddef>
 #include <sys/poll.h>
 #include <unordered_map>
+#include <prometheus/counter.h>
+#include <prometheus/exposer.h>
+#include <prometheus/registry.h>
 
 namespace eprosima {
 namespace uxr {
@@ -86,6 +89,10 @@ private:
     uint8_t buffer_[SERVER_BUFFER_SIZE];
     uint16_t agent_port_;
     uint16_t client_port_;
+    std::shared_ptr<prometheus::Registry> metrics_registry = std::make_shared<prometheus::Registry>();
+    std::shared_ptr<prometheus::Exposer> metrics_exposer;
+    prometheus::Counter* messagesFromFlightController;
+    prometheus::Counter* messagesToFlightController;
 #ifdef UAGENT_DISCOVERY_PROFILE
     DiscoveryServerLinux<IPv4EndPoint> discovery_server_;
 #endif
