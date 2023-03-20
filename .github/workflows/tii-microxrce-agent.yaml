@@ -61,7 +61,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          platform: linux/riscv64
+          platforms: linux/riscv64
           file: ./Dockerfile.riscv64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
