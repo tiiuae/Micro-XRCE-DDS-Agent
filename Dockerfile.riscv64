@@ -27,7 +27,7 @@ RUN apt-get update \
 COPY --from=builder /main_ws/install/microxrcedds_agent/bin/MicroXRCEAgent /usr/bin
 COPY --from=builder /main_ws/install/microxrcedds_agent/lib64/libmicroxrcedds_agent.so.2.2.0 /usr/lib64/
 RUN ln -s /usr/lib64/libmicroxrcedds_agent.so.2.2.0 /usr/lib64/libmicroxrcedds_agent.so.2.2 \
-    && /usr/lib64/libmicroxrcedds_agent.so.2.2 /usr/lib64/libmicroxrcedds_agent.so
+    && ln -s /usr/lib64/libmicroxrcedds_agent.so.2.2 /usr/lib64/libmicroxrcedds_agent.so
 
 COPY healthcheck.sh /healthcheck.sh
 COPY entrypoint.sh /entrypoint.sh
