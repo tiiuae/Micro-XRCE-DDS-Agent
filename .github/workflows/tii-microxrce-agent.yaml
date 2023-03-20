@@ -1,9 +1,16 @@
 name: tii-microxrce-agent
 
 on:
+  push:
+    branches: [ "riscv64" ]
+    paths-ignore:
+      - 'README.md'
+      - 'CHANGELOG.md'
+  pull_request:
+    branches: [ "main" ]
   repository_dispatch:
     types: [fog-ros-baseimage-update]
-  push:
+  workflow_dispatch:
 
 jobs:
   build:
