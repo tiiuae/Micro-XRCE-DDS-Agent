@@ -24,13 +24,16 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
 	&& pip3 install simplejson pystache
 
+RUN mkdir -p /usr/local/lib \
+    mkdir -p /usr/local/bin
+
 COPY --from=builder /main_ws/install/microxrcedds_agent/bin/MicroXRCEAgent /usr/local/bin
 COPY --from=builder /main_ws/install/microxrcedds_agent/lib64/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib
 RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicroxrcedds_agent.so.2.2 \
     && ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2 /usr/local/lib/libmicroxrcedds_agent.so
 
-ENV PATH=/usr/local/bin:$PATH
-ENV LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+ENV PATH="/usr/local/bin:$PATH"
+ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
 COPY healthcheck.sh /healthcheck.sh
 COPY entrypoint.sh /entrypoint.sh
