@@ -2,7 +2,7 @@
 
 unset FASTRTPS_DEFAULT_PROFILES_FILE
 
-./parse_agent_refs.py
+/parse_agent_refs.py
 
 _term() {
         # FILL UP PROCESS SEARCH PATTERN HERE TO FIND PROPER PROCESS FOR SIGINT:
