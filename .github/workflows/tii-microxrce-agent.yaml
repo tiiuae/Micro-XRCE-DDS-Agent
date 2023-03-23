@@ -69,11 +69,12 @@ jobs:
         uses: docker/bake-action@v2
         with:
           push: true
-          set: *.TAG = ${{ steps.vars.outputs.SHORT_GIT_SHA }}
+          set: amd64.TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }}
+          set: riscv64.TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }}
 
       - name: Create manifest list
         run: |
           docker buildx imagetools create \
           -t ghcr.io/tiiuae/tii-microxrce-agent:sha-${{ steps.vars.outputs.SHORT_GIT_SHA }} \
           ghcr.io/tiiuae/tii-microxrce-agent:sha-${{ steps.vars.outputs.SHORT_GIT_SHA }}-amd64 \
-          ghcr.io/tiiuae/tii-microxrce-agent:sha-${{ steps.vars.outputs.SHORT_GIT_SHA }}-riscv6
+          ghcr.io/tiiuae/tii-microxrce-agent:sha-${{ steps.vars.outputs.SHORT_GIT_SHA }}-riscv64
