@@ -66,12 +66,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build container image and push
-        uses: docker/bake-action@v2
-        with:
-          push: true
-          set: |
-            amd64.TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }}
-            riscv64.TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }}
+        run: |
+          TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }} \
+          docker buildx build bake --push
 
       - name: Create manifest list
         run: |
