@@ -69,8 +69,9 @@ jobs:
         uses: docker/bake-action@v2
         with:
           push: true
-          set: amd64.TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }}
-          set: riscv64.TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }}
+          set: |
+            amd64.TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }}
+            riscv64.TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }}
 
       - name: Create manifest list
         run: |
