@@ -18,6 +18,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Set short git commit SHA
+        id: vars
+        run: |
+          calculatedSha=$(git rev-parse --short ${{ github.sha }})
+          echo "SHORT_GIT_SHA=$calculatedSha" >> $GITHUB_OUTPUT
+
       - name: Set image tag format without suffix
         run: |
           echo "IMAGE_TAG_FORMAT=type=sha" >> $GITHUB_ENV
@@ -60,10 +66,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build container image and push
-        uses: docker/build-push-action@v4
+        uses: docker/bake-action@v2
         with:
-          context: .
-          platforms: linux/riscv64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          set: *.TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }}
+
+      - name: Create manifest list
+        run: |
+          docker buildx imagetools create \
+          -t ghcr.io/tiiuae/tii-microxrce-agent:sha-${{ steps.vars.outputs.SHORT_GIT_SHA }} \
+          ghcr.io/tiiuae/tii-microxrce-agent:sha-${{ steps.vars.outputs.SHORT_GIT_SHA }}-amd64 \
+          ghcr.io/tiiuae/tii-microxrce-agent:sha-${{ steps.vars.outputs.SHORT_GIT_SHA }}-riscv6

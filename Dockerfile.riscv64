@@ -1,10 +1,10 @@
-FROM ghcr.io/tiiuae/fog-ros-baseimage-builder:riscv64_support as builder
+FROM ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-c56f554 as builder
 
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        prometheus-cpp-dev \
-        civetweb-cpp-dev \
-    && rm -rf /var/lib/apt/lists/*
+# RUN apt-get update \
+#     && apt-get install -y --no-install-recommends \
+#         prometheus-cpp-dev \
+#         civetweb-cpp-dev \
+#     && rm -rf /var/lib/apt/lists/*
 
 COPY . /main_ws/src/
 
@@ -13,7 +13,7 @@ RUN /packaging/build_colcon.sh
 #  ▲               runtime ──┐
 #  └── build                 ▼
 
-FROM ghcr.io/tiiuae/fog-ros-baseimage:riscv64_support
+FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-c56f554
 
 HEALTHCHECK --interval=5s CMD /healthcheck.sh
 
