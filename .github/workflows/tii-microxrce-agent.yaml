@@ -68,7 +68,7 @@ jobs:
       - name: Build container image and push
         run: |
           TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }} \
-          docker buildx bake --push
+          docker buildx bake --provenance=false --push
 
       - name: Create manifest list
         run: |
