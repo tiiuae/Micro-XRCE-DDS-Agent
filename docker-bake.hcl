@@ -16,7 +16,7 @@ group "default" {
 
 target "_common" {
     context = "."
-    labels = $LABELS
+    labels = ${LABELS}
 }
 
 target "amd64" {
