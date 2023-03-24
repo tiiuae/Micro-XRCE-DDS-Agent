@@ -7,7 +7,7 @@ variable "NAME" {
 }
 
 variable "LABELS" {
-    default = ["labels=not_set"]
+    default = null
 }
 
 group "default" {
