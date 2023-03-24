@@ -7,7 +7,6 @@ variable "NAME" {
 }
 
 variable "LABELS" {
-    type = list(string)
     default = null
 }
 
