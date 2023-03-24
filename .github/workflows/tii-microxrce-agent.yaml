@@ -67,7 +67,6 @@ jobs:
 
       - name: Build container image and push
         run: |
-          echo "${{ steps.meta.outputs.labels }}" && \
           TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }} \
           LABELS="${{ steps.meta.outputs.labels }}" \
           NAME=tii-microxrce-agent \

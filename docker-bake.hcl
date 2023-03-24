@@ -16,7 +16,7 @@ group "default" {
 
 target "_common" {
     context = "."
-    labels = zipmap([for s in "${LABELS}" : split("=", s)[0]], [for s in "${LABELS}" : split("=", s)[1]])
+    labels = zipmap([for s in split("\n", "${LABELS}") : split("=", s)[0]], [for s in split("\n", "${LABELS}") : split("=", s)[1]])
 }
 
 target "amd64" {
