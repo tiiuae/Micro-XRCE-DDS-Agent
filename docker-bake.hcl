@@ -7,7 +7,7 @@ variable "NAME" {
 }
 
 variable "LABELS" {
-    default = "labels_not_set"
+    default = ["labels=not_set"]
 }
 
 group "default" {
@@ -16,7 +16,7 @@ group "default" {
 
 target "_common" {
     context = "."
-    labels = ["${LABELS}"]
+    labels = zipmap([for s in "${LABELS}" : split("=", s)[0]], [for s in "${LABELS}" : split("=", s)[1]])
 }
 
 target "amd64" {
