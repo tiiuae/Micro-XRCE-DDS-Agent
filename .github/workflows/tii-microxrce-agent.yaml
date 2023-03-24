@@ -68,7 +68,7 @@ jobs:
       - name: Build container image and push
         run: |
           TAG=${{ steps.vars.outputs.SHORT_GIT_SHA }} \
-          LABELS=${{ steps.meta.outputs.labels }} \
+          LABELS="${{ steps.meta.outputs.labels }}" \
           NAME=tii-microxrce-agent \
           docker buildx bake --provenance=false --push
 
