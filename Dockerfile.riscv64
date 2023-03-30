@@ -1,4 +1,4 @@
-FROM ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-c56f554 as builder
+FROM ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-839ea56 as builder
 
 # RUN apt-get update \
 #     && apt-get install -y --no-install-recommends \
@@ -13,7 +13,7 @@ RUN /packaging/build_colcon.sh
 #  ▲               runtime ──┐
 #  └── build                 ▼
 
-FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-c56f554
+FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-839ea56
 
 HEALTHCHECK --interval=5s CMD /healthcheck.sh
 
