@@ -1,8 +1,16 @@
 #!/bin/bash -e
 
-unset FASTRTPS_DEFAULT_PROFILES_FILE
+
+if [ "$FASTRTPS_DEFAULT_PROFILES_FILE" != "" ]; then
+        cp $FASTRTPS_DEFAULT_PROFILES_FILE /default_profiles.xml
+else
+        cp agent.refs default_profiles.xml
+fi
 
 /parse_agent_refs.py
+/combine_default_profiles.py
+
+unset FASTRTPS_DEFAULT_PROFILES_FILE
 
 _term() {
         # FILL UP PROCESS SEARCH PATTERN HERE TO FIND PROPER PROCESS FOR SIGINT:

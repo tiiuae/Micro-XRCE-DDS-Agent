@@ -1,8 +1,8 @@
 <profiles>
-    <participant profile_name="default_xrce_participant">
+    <participant profile_name="participant_profile_fog_sw">
         <domainId>0</domainId>
         <rtps>
-            <name>default_xrce_participant</name>
+            <name>participant_profile_fog_sw</name>
         </rtps>
     </participant>
 </profiles>

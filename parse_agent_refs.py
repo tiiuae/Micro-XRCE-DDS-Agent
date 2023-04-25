@@ -36,14 +36,14 @@ tmpl = ""
 with open(key_path, "r") as f:
   key = f.read().rstrip()
 
-agent_refs_must_file = os.path.join(agent_refs_path, "agent.refs.mustache")
+agent_refs_must_file = os.path.join(agent_refs_path, "dds_security_part_mustache.xml")
 with open(agent_refs_must_file, "r") as f:
   tmpl = f.read()
 
 agent_refs_data = pystache.render(tmpl, {'enclave_path': enclave_path, 'key_p11': key })
 
 # Remove original agent.refs
-agent_refs_file = os.path.join(agent_refs_path, "agent.refs")
+agent_refs_file = os.path.join(agent_refs_path, "dds_security_part.xml")
 if os.path.exists(agent_refs_file):
   os.remove(agent_refs_file)
 

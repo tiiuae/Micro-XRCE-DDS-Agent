@@ -39,7 +39,8 @@ COPY healthcheck.sh /healthcheck.sh
 COPY entrypoint.sh /entrypoint.sh
 
 COPY parse_agent_refs.py /parse_agent_refs.py
-COPY agent.refs.mustache /agent.refs.mustache
+COPY combine_default_profiles.py /combine_default_profiles.py
+COPY dds_security_part_mustache.xml /dds_security_part_mustache.xml
 COPY agent.refs /agent.refs
 
 ENTRYPOINT [ "/entrypoint.sh" ]
