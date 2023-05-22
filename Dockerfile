@@ -1,11 +1,5 @@
 FROM ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-839ea56 as builder
 
-# RUN apt-get update \
-#     && apt-get install -y --no-install-recommends \
-#         prometheus-cpp-dev \
-#         civetweb-cpp-dev \
-#     && rm -rf /var/lib/apt/lists/*
-
 COPY . /main_ws/src/
 
 RUN /packaging/build_colcon.sh
