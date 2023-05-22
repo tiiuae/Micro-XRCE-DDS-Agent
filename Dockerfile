@@ -1,4 +1,4 @@
-FROM ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-839ea56 as builder
+FROM ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-549d28a as builder
 
 COPY . /main_ws/src/
 
@@ -7,7 +7,7 @@ RUN /packaging/build_colcon.sh
 #  ▲               runtime ──┐
 #  └── build                 ▼
 
-FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-839ea56
+FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-549d28a
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
