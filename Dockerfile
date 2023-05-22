@@ -15,7 +15,9 @@ RUN /packaging/build_colcon.sh
 
 FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-839ea56
 
-HEALTHCHECK --interval=5s CMD /healthcheck.sh
+HEALTHCHECK --interval=5s \
+	CMD fog-health check --metric=messages_from_flightcontroller_count --diff-gte=1.0 \
+		--metrics-from=http://localhost:${METRICS_PORT}/metrics --only-if-nonempty=${METRICS_PORT}
 
 RUN apt-get update \
     && apt-get install -y \
