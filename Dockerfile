@@ -33,9 +33,4 @@ RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicrox
 ENV PATH="/usr/local/bin:$PATH" \
     LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
-COPY healthcheck.sh /healthcheck.sh
-COPY entrypoint.sh /entrypoint.sh
-
-COPY parse_agent_refs.py /parse_agent_refs.py
-COPY agent.refs.mustache /agent.refs.mustache
-COPY agent.refs /agent.refs
+COPY entrypoint.sh parse_agent_refs.py agent.refs.mustache agent.refs /
