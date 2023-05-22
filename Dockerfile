@@ -9,6 +9,8 @@ RUN /packaging/build_colcon.sh
 
 FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-839ea56
 
+ENTRYPOINT [ "/entrypoint.sh" ]
+
 HEALTHCHECK --interval=5s \
 	CMD fog-health check --metric=messages_from_flightcontroller_count --diff-gte=1.0 \
 		--metrics-from=http://localhost:${METRICS_PORT}/metrics --only-if-nonempty=${METRICS_PORT}
@@ -37,5 +39,3 @@ COPY entrypoint.sh /entrypoint.sh
 COPY parse_agent_refs.py /parse_agent_refs.py
 COPY agent.refs.mustache /agent.refs.mustache
 COPY agent.refs /agent.refs
-
-ENTRYPOINT [ "/entrypoint.sh" ]
