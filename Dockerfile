@@ -11,7 +11,7 @@ RUN /packaging/build.sh
 #  ▲               runtime ──┐
 #  └── build                 ▼
 
-FROM ghcr.io/tiiuae/fog-ros-baseimage:v2.1.0
+FROM ghcr.io/tiiuae/fog-ros-baseimage:feat-caml-proxy
 
 HEALTHCHECK --interval=5s \
 	CMD fog-health check --metric=messages_from_flightcontroller_count --diff-gte=1.0 \
