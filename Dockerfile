@@ -1,13 +1,22 @@
-FROM ghcr.io/tiiuae/fog-ros-baseimage-builder:sha-549d28a as builder
+# Given dynamically from CI job.
+FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/tiiuae/fog-ros-sdk:sha-5f65a86-${TARGETARCH:-amd64} AS builder
 
-COPY . /main_ws/src/
+# Must be defined another time after "FROM" keyword.
+ARG TARGETARCH
 
-RUN /packaging/build_colcon.sh
+# SRC_DIR environment variable is defined in the fog-ros-sdk image.
+# The same workspace path is used by all ROS2 components.
+# See: https://github.com/tiiuae/fog-ros-baseimage/blob/main/Dockerfile.sdk_builder
+COPY . $SRC_DIR/microxrcedds_agent
+
+RUN /packaging/build_colcon_sdk.sh ${TARGETARCH:-amd64}
+# Even though it is possible to tar the install directory for retrieving it later in runtime image,
+# the tar extraction in arm64 emulated on arm64 is still slow. So, we copy the install directory instead
 
 #  ▲               runtime ──┐
 #  └── build                 ▼
 
-FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-549d28a
+FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-5f65a86
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
@@ -25,8 +34,8 @@ RUN apt-get update \
 RUN mkdir -p /usr/local/lib \
     && mkdir -p /usr/local/bin
 
-COPY --from=builder /main_ws/install/microxrcedds_agent/bin/MicroXRCEAgent /usr/local/bin
-COPY --from=builder /main_ws/install/microxrcedds_agent/lib64/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib
+COPY --from=builder /main_ws/install/bin/MicroXRCEAgent /usr/local/bin
+COPY --from=builder /main_ws/install/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib
 RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicroxrcedds_agent.so.2.2 \
     && ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2 /usr/local/lib/libmicroxrcedds_agent.so
 

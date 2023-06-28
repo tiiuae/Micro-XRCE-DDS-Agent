@@ -545,3 +545,13 @@ __pycache__/
 *_REMOTE_*.txt
 
 # End of https://www.gitignore.io/api/git
+
+.circleci/
+.github/
+.git/
+.github/
+.vscode/
+.dockerignore
+.gitignore
+**Dockerfile
+**.Dockerfile
