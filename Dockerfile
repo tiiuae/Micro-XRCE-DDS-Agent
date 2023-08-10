@@ -42,4 +42,4 @@ RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicrox
 ENV PATH="/usr/local/bin:$PATH" \
     LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
-COPY entrypoint.sh parse_agent_refs.py agent.refs.mustache agent.refs /
+COPY entrypoint.sh parse_dds_security_part.py dds_security_part_mustache.xml combine_default_profiles.py agent.refs /
