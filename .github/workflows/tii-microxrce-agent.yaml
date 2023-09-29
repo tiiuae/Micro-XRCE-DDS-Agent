@@ -20,7 +20,7 @@ jobs:
     name: 🔨
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set short git commit SHA
         id: vars
@@ -43,7 +43,7 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v3
+        uses: docker/metadata-action@v4
         with:
           images: ghcr.io/tiiuae/tii-microxrce-agent
           tags: |
