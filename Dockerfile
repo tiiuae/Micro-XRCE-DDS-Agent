@@ -24,8 +24,8 @@ HEALTHCHECK --interval=5s \
 	CMD fog-health check --metric=messages_from_flightcontroller_count --diff-gte=1.0 \
 		--metrics-from=http://localhost:${METRICS_PORT}/metrics --only-if-nonempty=${METRICS_PORT}
 
-RUN apt-get update \
-    && apt-get install -y \
+RUN apt update \
+    && apt install -y \
         prometheus-cpp \
         civetweb-cpp \
     && rm -rf /var/lib/apt/lists/* \
