@@ -129,7 +129,6 @@ function(set_common_compile_options target)
             -Wshadow
             $<$<COMPILE_LANGUAGE:CXX>:-Wnon-virtual-dtor>
             -pedantic
-            -Wcast-align
             -Wunused
             $<$<COMPILE_LANGUAGE:CXX>:-Woverloaded-virtual>
             -Wconversion

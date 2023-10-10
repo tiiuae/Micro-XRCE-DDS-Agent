@@ -1,5 +1,5 @@
 # Given dynamically from CI job.
-FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/tiiuae/fog-ros-sdk:sha-6d67ecf-${TARGETARCH:-amd64} AS builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/tiiuae/fog-ros-sdk:v3.0.1-${TARGETARCH:-amd64} AS builder
 
 # Must be defined another time after "FROM" keyword.
 ARG TARGETARCH
@@ -16,7 +16,7 @@ RUN /packaging/build_colcon_sdk.sh ${TARGETARCH:-amd64}
 #  ▲               runtime ──┐
 #  └── build                 ▼
 
-FROM ghcr.io/tiiuae/fog-ros-baseimage:sha-6d67ecf
+FROM ghcr.io/tiiuae/fog-ros-baseimage:v3.0.1
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 
@@ -42,4 +42,4 @@ RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicrox
 ENV PATH="/usr/local/bin:$PATH" \
     LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 
-COPY entrypoint.sh parse_agent_refs.py agent.refs.mustache agent.refs /
+COPY entrypoint.sh parse_dds_security_part.py dds_security_part_mustache.xml combine_default_profiles.py agent.refs /

@@ -42,6 +42,7 @@ option(UAGENT_BUILD_USAGE_EXAMPLES "Build Micro XRCE-DDS Agent built-in usage ex
 
 set(UAGENT_P2P_CLIENT_VERSION 2.2.0 CACHE STRING "Sets Micro XRCE-DDS client version for P2P")
 set(UAGENT_P2P_CLIENT_TAG v2.2.0 CACHE STRING "Sets Micro XRCE-DDS client tag for P2P")
+set(ignoreMe "${BUILD_TESTING}")
 
 option(UAGENT_BUILD_CI_TESTS "Build CI test cases.")
 if(UAGENT_BUILD_CI_TESTS)
@@ -285,7 +286,6 @@ target_compile_options(${PROJECT_NAME}
         $<$<CXX_COMPILER_ID:GNU>:-fstrict-aliasing>
         $<$<CXX_COMPILER_ID:GNU>:-Wall>
         $<$<CXX_COMPILER_ID:GNU>:-Wextra>
-        $<$<CXX_COMPILER_ID:GNU>:-Wcast-align>
         $<$<CXX_COMPILER_ID:GNU>:-Wshadow>
         $<$<CXX_COMPILER_ID:MSVC>:/W4>
         $<$<CXX_COMPILER_ID:MSVC>:/wd4700>

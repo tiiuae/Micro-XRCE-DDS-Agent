@@ -3,9 +3,9 @@
 import sys, os
 import pystache
 
-agent_refs_path=""
+dds_security_part_path=""
 if len(sys.argv) > 1:
-  agent_refs_path=sys.argv[1]
+  dds_security_part_path=sys.argv[1]
 
 env_keystore = os.environ.get("ROS_SECURITY_KEYSTORE")
 env_enclave_override = os.environ.get("ROS_SECURITY_ENCLAVE_OVERRIDE")
@@ -36,17 +36,17 @@ tmpl = ""
 with open(key_path, "r") as f:
   key = f.read().rstrip()
 
-agent_refs_must_file = os.path.join(agent_refs_path, "agent.refs.mustache")
-with open(agent_refs_must_file, "r") as f:
+dds_security_part_must_file = os.path.join(dds_security_part_path, "dds_security_part_mustache.xml")
+with open(dds_security_part_must_file, "r") as f:
   tmpl = f.read()
 
-agent_refs_data = pystache.render(tmpl, {'enclave_path': enclave_path, 'key_p11': key })
+dds_security_part_data = pystache.render(tmpl, {'enclave_path': enclave_path, 'key_p11': key })
 
-# Remove original agent.refs
-agent_refs_file = os.path.join(agent_refs_path, "agent.refs")
-if os.path.exists(agent_refs_file):
-  os.remove(agent_refs_file)
+# Remove old dds_security_part.xml if exists
+dds_security_part_file = os.path.join(dds_security_part_path, "dds_security_part.xml")
+if os.path.exists(dds_security_part_file):
+  os.remove(dds_security_part_file)
 
-# Write new agent.refs with sros params
-with open(agent_refs_file, 'w') as f:
-  f.write(agent_refs_data)
+# Write new dds_security_part.xml with sros params for combining
+with open(dds_security_part_file, 'w') as f:
+  f.write(dds_security_part_data)
