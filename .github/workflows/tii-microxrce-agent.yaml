@@ -6,7 +6,7 @@ on:
       - 'README.md'
       - 'CHANGELOG.md'
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
   repository_dispatch:
     types: [fog-ros-baseimage-update]
   workflow_dispatch:
