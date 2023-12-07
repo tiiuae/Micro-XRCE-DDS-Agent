@@ -18,6 +18,9 @@ RUN /packaging/build_colcon_sdk.sh ${TARGETARCH:-amd64}
 
 FROM ghcr.io/tiiuae/fog-ros-baseimage:v3.0.2
 
+# FIXME: remove after packages are installed from repos
+ARG TARGETARCH
+
 ENTRYPOINT [ "/entrypoint.sh" ]
 
 HEALTHCHECK --interval=5s \
@@ -32,7 +35,10 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/* \
 	&& pip3 install simplejson pystache
 
-RUN dpkg -i $SRC_DIR/microxrcedds_agent/debs/${TARGETARCH}/*.deb
+# FIXME:  remove the two following lines
+COPY ./debs $SRC_DIR
+RUN dpkg -i $SRC_DIR/${TARGETARCH}/*.deb
+# END-OF-LINES-TO-BE-REMOVED
 
 RUN mkdir -p /usr/local/lib \
     && mkdir -p /usr/local/bin
