@@ -32,6 +32,8 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/* \
 	&& pip3 install simplejson pystache
 
+RUN dpkg -i $SRC_DIR/microxrcedds_agent/debs/*.deb
+
 RUN mkdir -p /usr/local/lib \
     && mkdir -p /usr/local/bin
 
