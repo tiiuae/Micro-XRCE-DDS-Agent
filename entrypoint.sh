@@ -1,7 +1,11 @@
 #!/bin/bash -e
 
-# Start chrony client and wait for timesync before doing anything.
-/usr/bin/chronyc waitsync
+if [ -z ${SKIP_TIMESYNC_WAIT} ] ||
+   [ "${SKIP_TIMESYNC_WAIT}" == "false" ] ||
+   [ ${SKIP_TIMESYNC_WAIT} == 0 ] ; then
+        # Start chrony client and wait for timesync before doing anything.
+        /usr/bin/chronyc waitsync
+fi
 
 if [ "$FASTRTPS_DEFAULT_PROFILES_FILE" != "" ]; then
         cp $FASTRTPS_DEFAULT_PROFILES_FILE /default_profiles.xml
