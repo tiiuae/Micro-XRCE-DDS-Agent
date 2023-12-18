@@ -2,9 +2,12 @@
 
 if [ -z ${SKIP_TIMESYNC_WAIT} ] ||
    [ "${SKIP_TIMESYNC_WAIT}" == "false" ] ||
-   [ ${SKIP_TIMESYNC_WAIT} == 0 ] ; then
+   [ ${SKIP_TIMESYNC_WAIT} -eq 0 ] ; then
         # Start chrony client and wait for timesync before doing anything.
-        /usr/bin/chronyc waitsync
+        echo "INFO: chronyc in MicroXRCEAgent waiting for time sync with 5 minutes timeout."
+        # waitsync [max-tries [max-correction [max-skew [interval]]]]
+        # if max-correction and max-skew are 0 then the value is not checked.
+        /usr/bin/chronyc waitsync 30 0 0 10
 fi
 
 if [ "$FASTRTPS_DEFAULT_PROFILES_FILE" != "" ]; then
