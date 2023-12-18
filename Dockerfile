@@ -1,5 +1,5 @@
 # Given dynamically from CI job.
-FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/tiiuae/fog-ros-sdk:v3.0.2-${TARGETARCH:-amd64} AS builder
+FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/tiiuae/fog-ros-sdk:v3.1.0-${TARGETARCH:-amd64} AS builder
 
 # Must be defined another time after "FROM" keyword.
 ARG TARGETARCH
@@ -16,7 +16,7 @@ RUN /packaging/build_colcon_sdk.sh ${TARGETARCH:-amd64}
 #  ▲               runtime ──┐
 #  └── build                 ▼
 
-FROM ghcr.io/tiiuae/fog-ros-baseimage:v3.0.2
+FROM ghcr.io/tiiuae/fog-ros-baseimage:v3.1.0
 
 # FIXME: remove after packages are installed from repos
 ARG TARGETARCH
@@ -31,14 +31,10 @@ RUN apt update \
     && apt install -y \
         prometheus-cpp \
         civetweb-cpp \
+        chronyc \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* \
 	&& pip3 install simplejson pystache
-
-# FIXME:  remove the two following lines
-COPY ./debs $SRC_DIR
-RUN dpkg -i $SRC_DIR/${TARGETARCH}/*.deb
-# END-OF-LINES-TO-BE-REMOVED
 
 RUN mkdir -p /usr/local/lib \
     && mkdir -p /usr/local/bin
