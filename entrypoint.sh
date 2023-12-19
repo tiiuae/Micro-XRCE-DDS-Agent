@@ -4,10 +4,13 @@ if [ -z ${SKIP_TIMESYNC_WAIT} ] ||
    [ "${SKIP_TIMESYNC_WAIT}" == "false" ] ||
    [ ${SKIP_TIMESYNC_WAIT} -eq 0 ] ; then
         # Start chrony client and wait for timesync before doing anything.
-        echo "INFO: chronyc in MicroXRCEAgent waiting for time sync with 5 minutes timeout."
+        # If timeout happens the script will give error and container exit with error.
+        # Docker daemon will restart the container.
+        echo "INFO: chronyc in MicroXRCEAgent waiting for time sync (3 minutes timeout)."
         # waitsync [max-tries [max-correction [max-skew [interval]]]]
         # if max-correction and max-skew are 0 then the value is not checked.
-        /usr/bin/chronyc waitsync 30 0 0 10
+        /usr/bin/chronyc -n -h 127.0.0.1 waitsync 18 0 0 10
+        echo "INFO: time sync achieved."
 fi
 
 if [ "$FASTRTPS_DEFAULT_PROFILES_FILE" != "" ]; then
