@@ -6,10 +6,10 @@ if [ -z ${SKIP_TIMESYNC_WAIT} ] ||
         # Start chrony client and wait for timesync before doing anything.
         # If timeout happens the script will give error and container exit with error.
         # Docker daemon will restart the container.
-        echo "INFO: chronyc in MicroXRCEAgent waiting for time sync (3 minutes timeout)."
+        echo "INFO: chronyc in MicroXRCEAgent waiting for time sync (1 minute timeout)."
         # waitsync [max-tries [max-correction [max-skew [interval]]]]
         # if max-correction and max-skew are 0 then the value is not checked.
-        /usr/bin/chronyc -n -h 127.0.0.1 waitsync 18 0 0 10
+        /usr/bin/chronyc -n -h 127.0.0.1 waitsync 30 0 0 2
         echo "INFO: time sync achieved."
 fi
 
