@@ -18,9 +18,6 @@ RUN /packaging/build_colcon_sdk.sh ${TARGETARCH:-amd64}
 
 FROM ghcr.io/tiiuae/fog-ros-baseimage:v3.1.0
 
-# FIXME: remove after packages are installed from repos
-ARG TARGETARCH
-
 ENTRYPOINT [ "/entrypoint.sh" ]
 
 HEALTHCHECK --interval=5s \
