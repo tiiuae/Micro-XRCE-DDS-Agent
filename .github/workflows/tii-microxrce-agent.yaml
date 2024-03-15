@@ -20,6 +20,9 @@ jobs:
     name: 🔨
     runs-on: ubuntu-latest
     steps:
+      - name: Free up space
+        uses: jlumbroso/free-disk-space@main
+        
       - uses: actions/checkout@v4
 
       - name: Set short git commit SHA
