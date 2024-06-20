@@ -1,5 +1,27 @@
 #!/bin/bash -e
 
+if [ -n "${CHRONY_DAEMON_IP}" ]; then
+        # Start chrony client and wait for timesync before doing anything.
+        # If timeout happens the script will give error and container exit with error.
+        # Then the docker daemon will restart the container.
+        echo "INFO: chronyc in MicroXRCEAgent waiting for time sync (1 minute timeout)."
+        # waitsync [max-tries [max-correction [max-skew [interval]]]]
+        # if max-correction and max-skew are 0 then the value is not checked.
+        # TODO: in LMC this step will look like it is stuck. For some unknown
+        # reason the client needs to be restarted if the chrony daemon did not get timesync
+        # when the client was started.
+        attempts=10
+        while [ $attempts -gt 0 ]; do
+                set +e
+                /usr/bin/chronyc -n -h ${CHRONY_DAEMON_IP} waitsync 4 0 0 2
+                if [ $? -eq 0 ]; then
+                        echo "INFO: time sync achieved."
+                        break
+                fi
+                set -e
+                let attempts-=1
+        done
+fi
 
 if [ "$FASTRTPS_DEFAULT_PROFILES_FILE" != "" ]; then
         cp $FASTRTPS_DEFAULT_PROFILES_FILE /default_profiles.xml

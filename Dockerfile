@@ -28,6 +28,7 @@ RUN apt update \
     && apt install -y \
         prometheus-cpp \
         civetweb-cpp \
+        chronyc \
     && apt clean \
     && rm -rf /var/lib/apt/lists/* \
 	&& pip3 install simplejson pystache
