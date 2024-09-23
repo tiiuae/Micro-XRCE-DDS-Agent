@@ -34,14 +34,14 @@ else:
 keep_config = True
 with open(default_profiles_file, "r") as in_f:
   with open(agent_refs_tmp_file, "w") as out_f:
-    for line in in_f.readlines():
+    for line in in_f:
       line_str = line.strip()
 
       # Replace participant profile name
-      if line_str.startswith("<participant profile_name="):
+      if line_str.startswith("<participant") and "profile_name=" in line_str:
         line = re.sub(
-            '<participant profile_name="\S+"',
-            '<participant profile_name="default_xrce_participant"',
+            'profile_name="\S+"',
+            'profile_name="default_xrce_participant"',
             line)
 
       # Remove data_reader and data_writer configs
