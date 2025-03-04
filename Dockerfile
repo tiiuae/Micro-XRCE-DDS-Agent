@@ -36,9 +36,9 @@ RUN mkdir -p /usr/local/lib \
     && mkdir -p /usr/local/bin
 
 COPY --from=builder /main_ws/install/bin/MicroXRCEAgent /usr/local/bin
-COPY --from=builder /main_ws/install/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib
-RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicroxrcedds_agent.so.2.2 \
-    && ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2 /usr/local/lib/libmicroxrcedds_agent.so
+COPY --from=builder /main_ws/install/lib/libmicroxrcedds_agent.so.2.4.0 /usr/local/lib
+RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.4.0 /usr/local/lib/libmicroxrcedds_agent.so.2.4 \
+    && ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.4 /usr/local/lib/libmicroxrcedds_agent.so
 
 ENV PATH="/usr/local/bin:$PATH" \
     LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
