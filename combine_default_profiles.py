@@ -41,7 +41,7 @@ with open(default_profiles_file, "r") as in_f:
       if line_str.startswith("<participant") and "profile_name=" in line_str:
         line = re.sub(
             'profile_name="\S+"',
-            'profile_name="default_xrce_participant"',
+            'profile_name="px4_participant"',
             line)
 
       # Remove data_reader and data_writer configs
