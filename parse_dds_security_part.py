@@ -15,8 +15,8 @@ if env_keystore is None:
   sys.exit(0)
 
 if env_enclave_override is None:
-  print("ERROR: environment variable 'ROS_SECURITY_ENCLAVE_OVERRIDE' not found")
-  sys.exit(-1)
+  # this is not required at ROS side either. this empty path component later used in `os.path.join()` yields correct path.
+  env_enclave_override = ""
 
 # Remove backslash from beginning of override path to avoid os.path.join to
 #  start over from the root
