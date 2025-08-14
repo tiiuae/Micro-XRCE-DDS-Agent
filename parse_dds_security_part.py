@@ -14,16 +14,17 @@ if env_keystore is None:
   print("environment variable 'ROS_SECURITY_KEYSTORE' not set")
   sys.exit(0)
 
-if env_enclave_override is None:
-  # this is not required at ROS side either. this empty path component later used in `os.path.join()` yields correct path.
-  env_enclave_override = ""
+enclave_path=env_keystore
 
-# Remove backslash from beginning of override path to avoid os.path.join to
-#  start over from the root
-if env_enclave_override.startswith("/"):
-  env_enclave_override = env_enclave_override[1:]
+if env_enclave_override is not None:
+  # Remove backslash from beginning of override path to avoid os.path.join to
+  #  start over from the root
+  if env_enclave_override.startswith("/"):
+    env_enclave_override = env_enclave_override[1:]
+  # Legacy implementation
+  enclave_path = os.path.join(env_keystore, "enclaves", env_enclave_override)
 
-enclave_path = os.path.join(env_keystore, "enclaves", env_enclave_override)
+print("Using enclave path: " + enclave_path)
 key_path = os.path.join(enclave_path, "key.p11")
 
 if not os.path.exists(key_path):
