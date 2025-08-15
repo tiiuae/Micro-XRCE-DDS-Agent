@@ -3,6 +3,8 @@
 import sys, os, re
 import shutil
 
+participant_profile_name="px4_participant"
+
 agent_refs_path=""
 if len(sys.argv) > 1:
   agent_refs_path=sys.argv[1]
@@ -38,10 +40,12 @@ with open(default_profiles_file, "r") as in_f:
       line_str = line.strip()
 
       # Replace participant profile name
+      search_str = 'profile_name="\S+"'
+      replace_str = 'profile_name="'+participant_profile_name+'"'
       if line_str.startswith("<participant") and "profile_name=" in line_str:
         line = re.sub(
-            'profile_name="\S+"',
-            'profile_name="default_xrce_participant"',
+            search_str,
+            replace_str,
             line)
 
       # Remove data_reader and data_writer configs
