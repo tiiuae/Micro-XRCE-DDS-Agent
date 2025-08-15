@@ -1,8 +1,8 @@
 <profiles>
-    <participant profile_name="default_xrce_participant">
+    <participant profile_name="px4_participant">
         <domainId>0</domainId>
         <rtps>
-            <name>default_xrce_participant</name>
+            <name>px4_participant</name>
         </rtps>
     </participant>
 </profiles>
