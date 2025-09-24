@@ -8,6 +8,7 @@ ARG TARGETARCH
 # The same workspace path is used by all ROS2 components.
 # See: https://github.com/tiiuae/fog-ros-baseimage/blob/main/Dockerfile.sdk_builder
 COPY . $SRC_DIR/microxrcedds_agent
+COPY calibration_msgs $SRC_DIR/calibration_msgs
 
 RUN /packaging/build_colcon_sdk.sh ${TARGETARCH:-amd64}
 # Even though it is possible to tar the install directory for retrieving it later in runtime image,
@@ -37,6 +38,8 @@ RUN mkdir -p /usr/local/lib \
 
 COPY --from=builder /main_ws/install/bin/MicroXRCEAgent /usr/local/bin
 COPY --from=builder /main_ws/install/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib
+COPY --from=builder /main_ws/install/lib/libcalibration_msgs* /usr/local/lib/
+COPY --from=builder /main_ws/install/share/calibration_msgs /usr/share/calibration_msgs
 RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicroxrcedds_agent.so.2.2 \
     && ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2 /usr/local/lib/libmicroxrcedds_agent.so
 
