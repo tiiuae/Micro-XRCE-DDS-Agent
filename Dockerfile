@@ -1,5 +1,4 @@
 # Given dynamically from CI job.
-FROM ghcr.io/tiiuae/tii-px4-msgs:sha-5856b2d-humble AS px4msgs
 FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/tiiuae/fog-ros-sdk:v3.4.0-${TARGETARCH:-amd64} AS builder
 
 # Must be defined another time after "FROM" keyword.
@@ -9,13 +8,14 @@ ARG TARGETARCH
 # The same workspace path is used by all ROS2 components.
 # See: https://github.com/tiiuae/fog-ros-baseimage/blob/main/Dockerfile.sdk_builder
 COPY . $SRC_DIR/microxrcedds_agent
-# Install px4_msgs from deb package 
-RUN apt update && apt install -y zstd binutils && rm -rf /var/lib/apt/lists/*
-COPY --from=px4msgs /artifacts/*.deb /tmp/
+
+# Extract px4_msgs from your provided image (with calibration messages)
+COPY --from=ghcr.io/tiiuae/tii-px4-msgs:sha-5856b2d-humble /artifacts/*.deb /tmp/
 RUN cd /tmp && \
-    ar x *.deb && \
-    zstd -d < data.tar.zst | tar -xf - -C / && \
-    rm -rf /tmp/*
+    dpkg-deb -x ros-humble-px4-msgs*.deb extracted && \
+    cp -r extracted/opt/ros/humble/include/px4_msgs /sdk_install/sysroots/*/usr/include/ && \
+    cp -r extracted/opt/ros/humble/share/px4_msgs /sdk_install/sysroots/*/usr/share/ && \
+    rm -rf /tmp/ros-humble-px4-msgs*.deb
 
 RUN /packaging/build_colcon_sdk.sh ${TARGETARCH:-amd64}
 # Even though it is possible to tar the install directory for retrieving it later in runtime image,
@@ -45,12 +45,11 @@ RUN mkdir -p /usr/local/lib \
 
 COPY --from=builder /main_ws/install/bin/MicroXRCEAgent /usr/local/bin
 COPY --from=builder /main_ws/install/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib
-RUN apt update && apt install -y zstd binutils && rm -rf /var/lib/apt/lists/*
-COPY --from=px4msgs /artifacts/*.deb /tmp/
-RUN cd /tmp && \
-    ar x *.deb && \
-    zstd -d < data.tar.zst | tar -xf - -C / && \
-    rm -rf /tmp/*
+
+# Copy px4_msgs runtime files with calibration support from builder extraction  
+COPY --from=builder /tmp/extracted/opt/ros/humble/local/lib/python3.10/dist-packages/px4_msgs /usr/lib/python3.10/site-packages/px4_msgs
+COPY --from=builder /tmp/extracted/opt/ros/humble/lib/libpx4_msgs*.so /usr/lib/
+COPY --from=builder /tmp/extracted/opt/ros/humble/share/px4_msgs /usr/share/px4_msgs
 RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicroxrcedds_agent.so.2.2 \
     && ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2 /usr/local/lib/libmicroxrcedds_agent.so
 
