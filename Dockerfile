@@ -38,8 +38,13 @@ RUN mkdir -p /usr/local/lib \
 
 COPY --from=builder /main_ws/install/bin/MicroXRCEAgent /usr/local/bin
 COPY --from=builder /main_ws/install/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib
-COPY --from=builder /main_ws/install/lib/libcalibration_msgs* /usr/local/lib/
+COPY --from=builder /main_ws/install/lib/libcalibration_msgs* /usr/lib/
 COPY --from=builder /main_ws/install/share/calibration_msgs /usr/share/calibration_msgs
+COPY --from=builder /main_ws/install/lib/python3.10/site-packages/ /usr/lib/python3.10/site-packages/
+COPY --from=builder /main_ws/install/share/ament_index/resource_index/packages/calibration_msgs /usr/share/ament_index/resource_index/packages/calibration_msgs
+COPY --from=builder /main_ws/install/share/ament_index/resource_index/parent_prefix_path/calibration_msgs /usr/share/ament_index/resource_index/parent_prefix_path/calibration_msgs
+COPY --from=builder /main_ws/install/share/ament_index/resource_index/rosidl_interfaces/calibration_msgs /usr/share/ament_index/resource_index/rosidl_interfaces/calibration_msgs  
+COPY --from=builder /main_ws/install/share/ament_index/resource_index/package_run_dependencies/calibration_msgs /usr/share/ament_index/resource_index/package_run_dependencies/calibration_msgs
 RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicroxrcedds_agent.so.2.2 \
     && ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2 /usr/local/lib/libmicroxrcedds_agent.so
 
