@@ -1,4 +1,5 @@
 # Given dynamically from CI job.
+FROM ghcr.io/tiiuae/tii-px4-msgs:sha-5856b2d-humble AS px4msgs
 FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/tiiuae/fog-ros-sdk:v3.4.0-${TARGETARCH:-amd64} AS builder
 
 # Must be defined another time after "FROM" keyword.
@@ -8,7 +9,13 @@ ARG TARGETARCH
 # The same workspace path is used by all ROS2 components.
 # See: https://github.com/tiiuae/fog-ros-baseimage/blob/main/Dockerfile.sdk_builder
 COPY . $SRC_DIR/microxrcedds_agent
-COPY calibration_msgs $SRC_DIR/calibration_msgs
+# Install px4_msgs from deb package 
+RUN apt update && apt install -y zstd binutils && rm -rf /var/lib/apt/lists/*
+COPY --from=px4msgs /artifacts/*.deb /tmp/
+RUN cd /tmp && \
+    ar x *.deb && \
+    zstd -d < data.tar.zst | tar -xf - -C / && \
+    rm -rf /tmp/*
 
 RUN /packaging/build_colcon_sdk.sh ${TARGETARCH:-amd64}
 # Even though it is possible to tar the install directory for retrieving it later in runtime image,
@@ -38,17 +45,17 @@ RUN mkdir -p /usr/local/lib \
 
 COPY --from=builder /main_ws/install/bin/MicroXRCEAgent /usr/local/bin
 COPY --from=builder /main_ws/install/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib
-COPY --from=builder /main_ws/install/lib/libcalibration_msgs* /usr/lib/
-COPY --from=builder /main_ws/install/share/calibration_msgs /usr/share/calibration_msgs
-COPY --from=builder /main_ws/install/lib/python3.10/site-packages/ /usr/lib/python3.10/site-packages/
-COPY --from=builder /main_ws/install/share/ament_index/resource_index/packages/calibration_msgs /usr/share/ament_index/resource_index/packages/calibration_msgs
-COPY --from=builder /main_ws/install/share/ament_index/resource_index/parent_prefix_path/calibration_msgs /usr/share/ament_index/resource_index/parent_prefix_path/calibration_msgs
-COPY --from=builder /main_ws/install/share/ament_index/resource_index/rosidl_interfaces/calibration_msgs /usr/share/ament_index/resource_index/rosidl_interfaces/calibration_msgs  
-COPY --from=builder /main_ws/install/share/ament_index/resource_index/package_run_dependencies/calibration_msgs /usr/share/ament_index/resource_index/package_run_dependencies/calibration_msgs
+RUN apt update && apt install -y zstd binutils && rm -rf /var/lib/apt/lists/*
+COPY --from=px4msgs /artifacts/*.deb /tmp/
+RUN cd /tmp && \
+    ar x *.deb && \
+    zstd -d < data.tar.zst | tar -xf - -C / && \
+    rm -rf /tmp/*
 RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicroxrcedds_agent.so.2.2 \
     && ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2 /usr/local/lib/libmicroxrcedds_agent.so
 
 ENV PATH="/usr/local/bin:$PATH" \
-    LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
+    LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH" \
+    AMENT_PREFIX_PATH="/opt/ros/humble"
 
 COPY entrypoint.sh parse_dds_security_part.py dds_security_part_mustache.xml combine_default_profiles.py agent.refs /
