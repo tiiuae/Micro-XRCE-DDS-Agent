@@ -10,7 +10,7 @@ ARG TARGETARCH
 COPY . $SRC_DIR/microxrcedds_agent
 
 # Extract px4_msgs from your provided image (with calibration messages)
-COPY --from=ghcr.io/tiiuae/tii-px4-msgs:sha-1630333-humble  /artifacts/*.deb /tmp/
+COPY --from=ghcr.io/tiiuae/tii-px4-msgs:sha-64446c5-humble  /artifacts/*.deb /tmp/
 RUN cd /tmp && \
     dpkg-deb -x ros-humble-px4-msgs*.deb extracted && \
     cp -r extracted/opt/ros/humble/include/px4_msgs /sdk_install/sysroots/*/usr/include/ && \
