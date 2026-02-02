@@ -29,7 +29,7 @@ _term() {
 # Use SIGTERM or TERM, does not seem to make any difference.
 trap _term TERM
 
-MicroXRCEAgent udp4 --port 2020 --send_port 2019 --refs /agent.refs &
+MicroXRCEAgent udp4 --port 2020 --refs /agent.refs &
 
 child=$!
 echo "Waiting for pid $child"
