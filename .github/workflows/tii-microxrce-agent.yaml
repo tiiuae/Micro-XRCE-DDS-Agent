@@ -24,6 +24,8 @@ jobs:
         uses: jlumbroso/free-disk-space@main
         
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Set short git commit SHA
         id: vars

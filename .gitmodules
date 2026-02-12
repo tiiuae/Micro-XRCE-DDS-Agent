@@ -1,0 +1,4 @@
+[submodule "PX4-msgs"]
+	path = PX4-msgs
+	url = https://github.com/tiiuae/PX4-msgs.git
+	branch = feat/ZTSS-TTE-OVERRIDE
