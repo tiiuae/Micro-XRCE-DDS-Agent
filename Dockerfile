@@ -1,46 +1,63 @@
-# Given dynamically from CI job.
-FROM --platform=${BUILDPLATFORM:-linux/amd64} ghcr.io/tiiuae/fog-ros-sdk:v3.4.0-${TARGETARCH:-amd64} AS builder
+FROM ghcr.io/tiiuae/tii-px4-msgs:sha-77f972d-${TARGETARCH:-amd64}-humble AS px4msgs
 
-# Must be defined another time after "FROM" keyword.
-ARG TARGETARCH
+FROM ros:humble-ros-core-jammy AS base
 
-# SRC_DIR environment variable is defined in the fog-ros-sdk image.
-# The same workspace path is used by all ROS2 components.
-# See: https://github.com/tiiuae/fog-ros-baseimage/blob/main/Dockerfile.sdk_builder
-COPY . $SRC_DIR/microxrcedds_agent
+RUN --mount=type=bind,from=px4msgs,source=/artifacts,target=/artifacts \
+    apt-get update \
+    && apt-get install -y --no-install-recommends /artifacts/*.deb \
+        libspdlog1 \
+        python3-pystache \
+        python3-simplejson \
+        ros-humble-fastrtps \
+        zlib1g \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN /packaging/build_colcon_sdk.sh ${TARGETARCH:-amd64}
-# Even though it is possible to tar the install directory for retrieving it later in runtime image,
-# the tar extraction in arm64 emulated on arm64 is still slow. So, we copy the install directory instead
+FROM base AS builder
 
-#  ▲               runtime ──┐
-#  └── build                 ▼
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        cmake \
+        git \
+        libspdlog-dev \
+        zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-FROM ghcr.io/tiiuae/fog-ros-baseimage:v3.4.0
+# Jammy does not package prometheus-cpp; link the metrics libraries statically.
+RUN git clone --branch v1.1.0 --depth 1 --recurse-submodules --shallow-submodules \
+        https://github.com/jupp0r/prometheus-cpp.git /prometheus-cpp \
+    && cmake -S /prometheus-cpp -B /prometheus-cpp/build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DENABLE_PUSH=OFF \
+        -DENABLE_TESTING=OFF \
+    && cmake --build /prometheus-cpp/build --parallel 2 \
+    && cmake --install /prometheus-cpp/build
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+WORKDIR /src
+COPY . .
 
-HEALTHCHECK --interval=5s \
-	CMD fog-health check --metric=messages_from_flightcontroller_count --diff-gte=1.0 \
-		--metrics-from=http://localhost:${METRICS_PORT}/metrics --only-if-nonempty=${METRICS_PORT}
+RUN . /opt/ros/humble/setup.sh \
+    && cmake -S . -B /build \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -DUAGENT_SUPERBUILD=OFF \
+        -DUAGENT_USE_SYSTEM_LOGGER=ON \
+    && cmake --build /build --parallel 2 \
+    && DESTDIR=/install cmake --install /build
 
-RUN apt update \
-    && apt install -y \
-        prometheus-cpp \
-        civetweb-cpp \
-    && apt clean \
-    && rm -rf /var/lib/apt/lists/* \
-	&& pip3 install simplejson pystache
+FROM base AS runtime
 
-RUN mkdir -p /usr/local/lib \
-    && mkdir -p /usr/local/bin
-
-COPY --from=builder /main_ws/install/bin/MicroXRCEAgent /usr/local/bin
-COPY --from=builder /main_ws/install/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib
-RUN ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2.0 /usr/local/lib/libmicroxrcedds_agent.so.2.2 \
-    && ln -s /usr/local/lib/libmicroxrcedds_agent.so.2.2 /usr/local/lib/libmicroxrcedds_agent.so
-
-ENV PATH="/usr/local/bin:$PATH" \
-    LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-
+WORKDIR /
+COPY --from=builder /install/usr/local/bin/ /usr/local/bin/
+COPY --from=builder /install/usr/local/lib/ /usr/local/lib/
+COPY --from=builder /prometheus-cpp/LICENSE /usr/share/doc/prometheus-cpp/LICENSE
+COPY --from=builder /prometheus-cpp/3rdparty/civetweb/LICENSE.md /usr/share/doc/civetweb/LICENSE.md
+COPY LICENSE /usr/share/doc/microxrcedds-agent/LICENSE
 COPY entrypoint.sh parse_dds_security_part.py dds_security_part_mustache.xml combine_default_profiles.py agent.refs /
+
+RUN ldconfig
+
+ENTRYPOINT ["/ros_entrypoint.sh", "/entrypoint.sh"]
+CMD []
