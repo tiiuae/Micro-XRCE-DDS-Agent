@@ -7,9 +7,6 @@ else
         cp agent.refs default_profiles.xml
 fi
 
-/parse_dds_security_part.py
-/combine_default_profiles.py
-
 unset FASTRTPS_DEFAULT_PROFILES_FILE
 
 _term() {

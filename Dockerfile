@@ -55,7 +55,7 @@ COPY --from=builder /install/usr/local/lib/ /usr/local/lib/
 COPY --from=builder /prometheus-cpp/LICENSE /usr/share/doc/prometheus-cpp/LICENSE
 COPY --from=builder /prometheus-cpp/3rdparty/civetweb/LICENSE.md /usr/share/doc/civetweb/LICENSE.md
 COPY LICENSE /usr/share/doc/microxrcedds-agent/LICENSE
-COPY entrypoint.sh parse_dds_security_part.py dds_security_part_mustache.xml combine_default_profiles.py agent.refs /
+COPY entrypoint.sh dds_security_part_mustache.xml agent.refs /
 
 RUN ldconfig
 
