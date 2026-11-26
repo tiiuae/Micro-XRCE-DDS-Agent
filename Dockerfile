@@ -49,13 +49,14 @@ RUN . /opt/ros/humble/setup.sh \
 
 FROM base AS runtime
 
+ENV FASTRTPS_DEFAULT_PROFILES_FILE=/DEFAULT_FASTRTPS_PROFILES.xml
 WORKDIR /
 COPY --from=builder /install/usr/local/bin/ /usr/local/bin/
 COPY --from=builder /install/usr/local/lib/ /usr/local/lib/
 COPY --from=builder /prometheus-cpp/LICENSE /usr/share/doc/prometheus-cpp/LICENSE
 COPY --from=builder /prometheus-cpp/3rdparty/civetweb/LICENSE.md /usr/share/doc/civetweb/LICENSE.md
 COPY LICENSE /usr/share/doc/microxrcedds-agent/LICENSE
-COPY entrypoint.sh dds_security_part_mustache.xml agent.refs /
+COPY entrypoint.sh agent.refs DEFAULT_FASTRTPS_PROFILES.xml /
 
 RUN ldconfig
 
