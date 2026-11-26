@@ -7,9 +7,6 @@ else
         cp agent.refs default_profiles.xml
 fi
 
-/parse_dds_security_part.py
-/combine_default_profiles.py
-
 unset FASTRTPS_DEFAULT_PROFILES_FILE
 
 _term() {
@@ -29,7 +26,7 @@ _term() {
 # Use SIGTERM or TERM, does not seem to make any difference.
 trap _term TERM
 
-MicroXRCEAgent udp4 --port 2020 --send_port 2019 --refs /agent.refs &
+MicroXRCEAgent udp4 --port 2020 --refs /agent.refs &
 
 child=$!
 echo "Waiting for pid $child"
